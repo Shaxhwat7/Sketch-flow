@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String     @id @default(uuid())
+  email         String     @unique
+  password      String
+  name          String
+  photo         String?
+  rooms         Room[]
+  chats         Chat[]
+}
+
+model Room {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  createdAt   DateTime  @default(now())
+  adminId     String
+  admin       User      @relation(fields: [adminId], references: [id])
+  chats       Chat[]
+  drawings    Drawing[]
+}
+
+model Chat {
+  id        Int       @id  @default(autoincrement())
+  roomId    Int
+  message   String
+  userId    String
+  room      Room      @relation(fields: [roomId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model Drawing {
+  id          String   @id @default(uuid())
+  roomId      Int
+  room        Room     @relation(fields: [roomId], references: [id])
+  elements    Element[]
+  images      Image[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  version     Int      @default(1)
+  title       String?
+}
+
+model Element {
+  id        String   @id @default(uuid())
+  drawingId String
+  drawing   Drawing  @relation(fields: [drawingId], references: [id], onDelete: Cascade)
+  type      String   // "rectangle", "ellipse", "arrow", "text", etc.
+  data      Json     // Excalidraw element data
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Image {
+  id        String   @id @default(uuid())
+  drawingId String
+  drawing   Drawing  @relation(fields: [drawingId], references: [id], onDelete: Cascade)
+  url       String
+  data      String?  // base64 or file path
+  filename  String?
+  mimeType  String?
+  size      Int?
+  createdAt DateTime @default(now())
+}
