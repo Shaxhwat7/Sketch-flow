@@ -18,7 +18,7 @@ export const CreateRoomSchema = z.object({
 export const DrawingElementSchema = z.object({
     id: z.string(),
     type: z.string(),
-    data: z.any(), // Excalidraw element data
+    data: z.any(),
     version: z.number().optional().default(1)
 })
 
