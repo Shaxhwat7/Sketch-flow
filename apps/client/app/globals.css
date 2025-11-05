@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+body{
+  background: rgba(148, 232, 241);
+}
+
+@theme {
+  --font-satoshi: "Satoshi", sans-serif;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-satoshi);
+  }
+}
