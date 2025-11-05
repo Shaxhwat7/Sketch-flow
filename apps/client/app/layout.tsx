@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SocketProvider } from "@/context/SocketContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +23,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") ?? "" : "";
   return (
     <html lang="en">
       <head>
@@ -30,7 +32,11 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-satoshi">{children}</body>
+      <body className="font-satoshi">
+        <SocketProvider token={token}>
+          {children}
+        </SocketProvider>
+      </body>
     </html>
   );
 }
